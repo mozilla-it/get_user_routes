@@ -111,7 +111,7 @@ def main():
     for address in squashed_routes:
         ip, mask = cidr_to_netmask(address)
         # For one entry per line, remove the trailing comma
-        print("\'{ip} {mask}\'").format(ip=ip, mask=mask),
+        print("{ip} {mask}").format(ip=ip, mask=mask)
 
 if __name__ == "__main__":
     main()
