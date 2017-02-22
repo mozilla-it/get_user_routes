@@ -41,6 +41,25 @@ def cidr_to_netmask(cidr):
     netmask = socket.inet_ntoa(struct.pack('!I', (1 << 32) - (1 << host_bits)))
     return network, netmask
 
+# function to remove more specific routes when less specific routes exist
+def squash_routes(listofroutes):
+    returnlist = []
+    # build a list of routes, ignoring single-host routes
+    notsinglehosts = []
+    for route in listofroutes:
+        if not route.find('/32') != -1:
+            notsinglehosts.append(route)
+    # Check every route against the list of non-single-host routes
+    for route in listofroutes:
+        for notsinglehost in notsinglehosts:
+            #check each route in the master list against the non-single host routes, but don't match against self
+            if IPNetwork(route) in IPNetwork(notsinglehost) and route != notsinglehost:
+                break
+        # if we went through the list without a match, add it to the final return list
+        else:
+            returnlist.append(route)
+    return returnlist
+
 
 def main():
     try:
@@ -85,9 +104,13 @@ def main():
     # merge user-specific routes with routes from the config, only unique. Sorted for human readability
     all_routes = sorted(set(config.ROUTES + notfoundlist))
 
+    # check that there are no overlapping routes
+    squashed_routes = squash_routes(all_routes)
+
     #Finally, we need to output all the routes in a nice list that bash will be able to iterate over
-    for address in all_routes:
+    for address in squashed_routes:
         ip, mask = cidr_to_netmask(address)
+        # For one entry per line, remove the trailing comma
         print("\'{ip} {mask}\'").format(ip=ip, mask=mask),
 
 if __name__ == "__main__":
