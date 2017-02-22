@@ -82,14 +82,13 @@ def main():
         else:
             notfoundlist.append(address)
 
-    #Finally, we need to output all the routes, both config and user-specific in a nice list that bash will be able to iterate over
-    for address in config.ROUTES:
-        ip, mask = cidr_to_netmask(address)
-        print "\'"+ip+" "+mask+"\'",
+    # merge user-specific routes with routes from the config, only unique. Sorted for human readability
+    all_routes = sorted(set(config.ROUTES + notfoundlist))
 
-    for address in notfoundlist:
+    #Finally, we need to output all the routes in a nice list that bash will be able to iterate over
+    for address in all_routes:
         ip, mask = cidr_to_netmask(address)
-        print "\'"+ip+" "+mask+"\'",
+        print("\'{ip} {mask}\'").format(ip=ip, mask=mask),
 
 if __name__ == "__main__":
     main()
