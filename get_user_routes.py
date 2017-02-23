@@ -11,7 +11,6 @@
 # libnfldap
 # netaddr
 
-import libnfldap
 import os
 import sys
 import pwd
@@ -19,27 +18,9 @@ import imp
 import socket
 import struct
 from netaddr import IPNetwork, IPAddress
+from lib import cidr_to_netmask
+import libnfldap
 
-cfg_path = ['get_user_routes.conf', '/usr/local/etc/get_user_routes.conf', '/etc/get_user_routes.conf']
-config = None
-
-for cfg in cfg_path:
-    if os.path.isfile(cfg):
-        try:
-            config = imp.load_source('config', cfg)
-        except:
-            pass
-
-if config == None:
-    print("Failed to load config")
-    sys.exit(1)
-
-# this function shamefully copied from http://stackoverflow.com/questions/33750233/convert-cidr-to-subnet-mask-in-python
-def cidr_to_netmask(cidr):
-    network, net_bits = cidr.split('/')
-    host_bits = 32 - int(net_bits)
-    netmask = socket.inet_ntoa(struct.pack('!I', (1 << 32) - (1 << host_bits)))
-    return network, netmask
 
 # function to remove more specific routes when less specific routes exist
 def squash_routes(listofroutes):
@@ -76,6 +57,20 @@ def remove_office_routes(listofroutes,office_routes):
 
 
 def main():
+    cfg_path = ['get_user_routes.conf', '/usr/local/etc/get_user_routes.conf', '/etc/get_user_routes.conf']
+    config = None
+
+    for cfg in cfg_path:
+        if os.path.isfile(cfg):
+            try:
+                config = imp.load_source('config', cfg)
+            except:
+                pass
+
+    if config == None:
+        print("Failed to load config")
+        sys.exit(1)
+
     try:
         username = sys.argv[1]
     except IndexError:
