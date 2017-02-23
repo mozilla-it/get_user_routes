@@ -60,6 +60,20 @@ def squash_routes(listofroutes):
             returnlist.append(route)
     return returnlist
 
+# function to filter out routes for destinations within office space
+def remove_office_routes(listofroutes,office_routes):
+    returnlist = []
+    # Check every route against the list of office routes
+    for route in listofroutes:
+        for office_route in office_routes:
+            #check each route in the master list against the non-single host routes, but don't match against self
+            if IPNetwork(route) in IPNetwork(office_route):
+                break
+        # if we went through the list without a match, add it to the final return list
+        else:
+            returnlist.append(route)
+    return returnlist
+
 
 def main():
     try:
@@ -67,6 +81,15 @@ def main():
     except IndexError:
         print ("Need one argument, email-username")
 	sys.exit (1)
+
+    # if the user is connecting from an office, we need to know, so that we can filter out local destinations
+    try:
+        if sys.argv[2] == "--office":
+            from_office=1
+        else:
+            from_office=0
+    except IndexError:
+        from_office=0
 
     # currently using libnfldap, since it has a function to get all the ACLs for a group
     ldap = libnfldap.LDAP(config.LDAP_URL, config.LDAP_BIND_DN, config.LDAP_BIND_PASSWD)
@@ -101,11 +124,15 @@ def main():
         else:
             notfoundlist.append(address)
 
-    # merge user-specific routes with routes from the config, only unique. Sorted for human readability
-    all_routes = sorted(set(config.ROUTES + notfoundlist))
 
-    # check that there are no overlapping routes
-    squashed_routes = squash_routes(all_routes)
+    # merge user-specific routes with routes from the config, only unique. Sorted for human readability
+    all_routes = sorted(set(config.ROUTES + notfoundlist + config.OFFICE_ROUTES))
+
+    # check that there are no overlapping routes, remove office routes if connecting from an office
+    if from_office == 1:
+        squashed_routes = remove_office_routes(squash_routes(all_routes),config.OFFICE_ROUTES)
+    else:
+        squashed_routes = squash_routes(all_routes)
 
     #Finally, we need to output all the routes in a nice list that bash will be able to iterate over
     for address in squashed_routes:

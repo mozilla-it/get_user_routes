@@ -8,3 +8,6 @@ LDAP_BIND_PASSWD='xxxxxx'
 ROUTES=["10.8.0.0/16",
         "10.10.0.0/16",
 	]
+
+OFFICE_ROUTES=["10.192.0.0/10",
+	        ]
