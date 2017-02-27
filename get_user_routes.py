@@ -16,8 +16,10 @@ import sys
 import pwd
 import imp
 import struct
-from lib.helper import cidr_to_netmask, squash_routes, remove_office_routes
+from lib.helper import cidr_to_netmask, squash_routes, remove_office_routes, ldap_routes_not_in_config,\
+    standardize_acls
 import libnfldap
+
 
 def main():
     cfg_path = ['get_user_routes.conf', '/usr/local/etc/get_user_routes.conf', '/etc/get_user_routes.conf']
@@ -60,31 +62,12 @@ def main():
 
     # find all vpn groups user is in and return IP attributes
     acls = ldap.getACLs('ou=groups,dc=mozilla',"(&(member="+dn+")(cn=vpn_*))")
-    ips = []
-    for group,dests in acls.iteritems():
-        for dest,desc in dests.iteritems():
-            # strip off port information
-            ip = dest.split(":")[0]
-            # if address is already in cidr format, add it, else assume single host IP and add /32
-            # this is in order to keep a consistent format for all addresses before we process
-            if ip.find('/') != -1:
-                ips.append(ip)
-            else:
-                ips.append(ip+'/32')
-
-    #Now that we have a list of all possible addresses that a user may access, we need to check
-    # if any aren't already covered by the default list of routes from the config.
-    notfoundlist = []
-    for address in ips:
-        for route in config.ROUTES:
-            if IPNetwork(address) in IPNetwork(route):
-                break
-        else:
-            notfoundlist.append(address)
+    ips = standardize_acls(acls)
+    ldap_routes = ldap_routes_not_in_config(ips, config.ROUTES)
 
 
     # merge user-specific routes with routes from the config, only unique. Sorted for human readability
-    all_routes = sorted(set(config.ROUTES + notfoundlist + config.OFFICE_ROUTES))
+    all_routes = sorted(set(config.ROUTES + ldap_routes + config.OFFICE_ROUTES))
 
     # check that there are no overlapping routes, remove office routes if connecting from an office
     if from_office == 1:

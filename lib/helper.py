@@ -1,6 +1,6 @@
 import socket
 import struct
-from netaddr import IPNetwork, IPAddress
+from netaddr import IPNetwork
 
 def cidr_to_netmask(cidr):
     network, net_bits = cidr.split('/')
@@ -41,3 +41,30 @@ def remove_office_routes(listofroutes,office_routes):
         else:
             returnlist.append(route)
     return returnlist
+
+#Now that we have a list of all possible addresses that a user may access, we need to check
+# if any aren't already covered by the default list of routes from the config.
+def ldap_routes_not_in_config(ips,config_routes):
+    notfoundlist = []
+    for address in ips:
+        for route in config_routes:
+            if IPNetwork(address) in IPNetwork(route):
+                break
+        else:
+            notfoundlist.append(address)
+    return notfoundlist
+
+#function to parse through all ldap ACLs and return a standard format in cidr notation, stripping port information
+def standardize_acls(acls):
+    ips = []
+    for group,dests in acls.iteritems():
+        for dest,desc in dests.iteritems():
+            # strip off port information
+            ip = dest.split(":")[0]
+            # if address is already in cidr format, add it, else assume single host IP and add /32
+            # this is in order to keep a consistent format for all addresses before we process
+            if ip.find('/') != -1:
+                ips.append(ip)
+            else:
+                ips.append(ip+'/32')
+    return ips
