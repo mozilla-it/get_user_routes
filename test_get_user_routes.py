@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import unittest
-from lib.helper import cidr_to_netmask, squash_routes, remove_office_routes
+from lib.helper import cidr_to_netmask, squash_routes, remove_office_routes, \
+        ldap_routes_not_in_config, standardize_acls
 
 
 class TestGetUserRoutes(unittest.TestCase):
@@ -74,5 +75,31 @@ class TestGetUserRoutes(unittest.TestCase):
             '10.0.0.0/8'
         ]
         ret = remove_office_routes(input, office_routes)
+        self.assertEqual(proper_output, ret)
+
+    def test_ldap_routes_not_in_config(self):
+        input = [
+            '10.0.0.0/8',
+            '63.245.1.5'
+        ]
+        config_routes = [
+            '10.0.0.0/8',
+        ]
+        proper_output = [
+            '63.245.1.5'
+        ]
+        ret = ldap_routes_not_in_config(input, config_routes)
+        self.assertEqual(proper_output, ret)
+
+    def test_standardize_acls(self):
+        input = {'vpn_admin': {'10.8.0.0/16': 'DC', '10.21.0.5': 'HOST'}, 'vpn_inventory': {'10.22.75.208:443': 'inventory-host','10.22.75.208:80': 'inventory-host'}}
+
+        proper_output = [
+                '10.22.75.208/32',
+                '10.22.75.208/32',
+                '10.21.0.5/32',
+                '10.8.0.0/16'
+            ]
+        ret = standardize_acls(input)
         self.assertEqual(proper_output, ret)
 
