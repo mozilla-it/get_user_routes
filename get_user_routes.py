@@ -16,7 +16,7 @@ import sys
 import pwd
 import imp
 import struct
-from lib.helper import cidr_to_netmask, squash_routes, remove_office_routes, ldap_routes_not_in_config,\
+from get_user_routes_utils import cidr_to_netmask, squash_routes, remove_office_routes, ldap_routes_not_in_config,\
     standardize_acls
 import libnfldap
 
