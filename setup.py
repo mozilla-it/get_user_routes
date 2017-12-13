@@ -5,7 +5,7 @@ import distutils.core
 name = 'get_user_routes'
 
 distutils.core.setup(name=name,
-    version='1.0',
+    version='1.0.1',
     author="Justin Dow",
     author_email="jdow@mozilla.com",
     url="https://github.com/jdow/get_user_routes",
@@ -13,8 +13,8 @@ distutils.core.setup(name=name,
     long_description=open('README.md').read(),
     license="MPL",
     requires=['libnfldap', 'netaddr'],
-    packages=['lib'],
-    py_modules=[name],
+    py_modules=[name+'_utils'],
+    scripts=[name+'.py'],
 
 #    scripts=[name],
 #    data_files=[
