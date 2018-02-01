@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 
-import distutils.core
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 name = 'get_user_routes'
 
-distutils.core.setup(name=name,
+setup(
+    name=name,
     version='1.0.1',
     author="Justin Dow",
     author_email="jdow@mozilla.com",
@@ -12,16 +16,7 @@ distutils.core.setup(name=name,
     description="Calculates minimal user routes, given ACLs in LDAP",
     long_description=open('README.md').read(),
     license="MPL",
-    requires=['libnfldap', 'netaddr'],
+    install_requires=['libnfldap', 'netaddr'],
     py_modules=[name+'_utils'],
     scripts=[name+'.py'],
-
-#    scripts=[name],
-#    data_files=[
-#        ('/usr/local/bin', [name + '.py']),
-#        ('/usr/local/etc', [name + '.conf']),
-#        ('/usr/local/lib', [name]),
-#        ('/usr/local/lib/__init__.py'),
-#
-#    ],
 )
