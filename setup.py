@@ -1,22 +1,19 @@
 #!/usr/bin/env python
+""" Setup script """
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
-name = 'get_user_routes'
+NAME = 'get_user_routes'
 
 setup(
-    name=name,
-    version='1.0.1',
-    author="Justin Dow",
-    author_email="jdow@mozilla.com",
-    url="https://github.com/jdow/get_user_routes",
-    description="Calculates minimal user routes, given ACLs in LDAP",
+    name=NAME,
+    version='1.0.5',
+    author="Greg Cox",
+    author_email="gcox@mozilla.com",
+    url="https://github.com/mozilla-it/get_user_routes",
+    description="Calculates minimal user routes, given a user's VPN ACLs",
     long_description=open('README.md').read(),
     license="MPL",
-    install_requires=['libnfldap', 'netaddr'],
-    py_modules=[name+'_utils'],
-    scripts=[name+'.py'],
+    install_requires=['iamvpnlibrary>=0.8.2', 'netaddr'],
+    scripts=[NAME+'.py'],
 )

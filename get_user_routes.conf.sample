@@ -1,0 +1,50 @@
+# NOTE: File managed by puppet
+
+[get-user-routes]
+# Section header
+
+# These are the datacenter routes you want 'everyone' to have,
+# whether they have gear in them or not.  This should help you
+# reduce the sheer amount of routes being pushed.
+# Having a route is required to get anywhere, but does not
+# guarantee that the person will have access once they get there.
+#
+FREE_ROUTES=['10.8.0.0/16',
+             '10.10.0.0/16',
+             ]
+
+# These are the office routes, in general terms.
+# "anything in here is an office"
+#
+# IF YOU HAVE OVERLAP BETWEEN 'FREE_ROUTES' AND 'COMPREHENSIVE_OFFICE_ROUTES'
+# YOU WILL HAVE A BAD DAY
+#
+COMPREHENSIVE_OFFICE_ROUTES = [ '10.192.0.0/10' ]
+
+# These are the breakout of per-office allocation.
+# If you're in (key) office, then you should not get pushed a VPN route
+# to go to (value) subnet.
+#
+# It is intended that all PER_OFFICE_ROUTES are within the space defined
+# by COMPREHENSIVE_OFFICE_ROUTES.
+#
+# IF YOU HAVE OVERLAP BETWEEN 'FREE_ROUTES' AND 'PER_OFFICE_ROUTES'
+# YOU WILL HAVE A BAD DAY
+#
+PER_OFFICE_ROUTES = {
+    'site1' : '10.238.0.0/16',
+    'site2' : '10.239.0.0/16',
+    }
+
+[testing]
+# The 'testing' section contains information for the unit tests.
+# A production instance can/should empty this.
+#
+# Here's an email address that is bad.  This will help us find cases where
+# someone should fail out.
+bad_user = someone_fake@badaddress.org
+#
+# This should be a valid user in your testing (someone who should be able
+# to log in.  Just having a username will get us a lot of tests.
+# If this user DOESN'T exist, you will have a looot of test failures.
+normal_user = me@company.com
