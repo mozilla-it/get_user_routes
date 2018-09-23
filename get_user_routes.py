@@ -86,7 +86,8 @@ class GetUserRoutes(object):
         config['COMPREHENSIVE_OFFICE_ROUTES'] = [IPNetwork(routestr)
                                                  for routestr in _officeroutes]
         config['PER_OFFICE_ROUTES'] = {office: IPNetwork(routestr)
-                                       for office, routestr in _perofficeroutes.iteritems()}
+                                       for office, routestr in
+                                       _perofficeroutes.iteritems()}
         self.config = config
 
     def _ingest_config_from_file(self, conf_file=None):
@@ -205,8 +206,8 @@ class GetUserRoutes(object):
         # remove those from consideration for a moment.  The user will get
         # these routes back later, so this is just some housekeeping to
         # shrink the size of user_acls.
-        user_acls = self.route_subtraction(user_acls,
-                                           self.config['FREE_ROUTES'])
+        user_acls = self.route_subtraction(
+            user_acls, self.config['FREE_ROUTES'])
         #
         # Next, we are going to strip out ALL the office routes from
         # the user's ACL list.  The reason here is, their personal _ACLs_
@@ -217,8 +218,8 @@ class GetUserRoutes(object):
         # DON'T want is a sysadmin with a big ACL coming along and having
         # that ACL dominating their routes later in this script while they're
         # in an office.
-        user_acls = self.route_subtraction(user_acls,
-                                           self.config['COMPREHENSIVE_OFFICE_ROUTES'])
+        user_acls = self.route_subtraction(
+            user_acls, self.config['COMPREHENSIVE_OFFICE_ROUTES'])
         #
         # Having cleaned out, what is left is the things that a user has
         # an ACL to, that they need a ROUTE to.  So, rename it:
