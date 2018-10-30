@@ -5,7 +5,7 @@ PACKAGE := get_user_routes
 all: test
 
 test:
-	python -B -m unittest discover -f -s test
+	python -B -m unittest discover -f -v -s test
 
 pep8:
 	@find ./* `git submodule --quiet foreach 'echo -n "-path ./$$path -prune -o "'` -type f -name '*.py' -exec pep8 {} \;

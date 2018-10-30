@@ -108,8 +108,8 @@ class GetUserRoutes(object):
                     # This bare-except is due to 2.7
                     # limitations in configparser.
                     pass
-        else:
-            raise IOError('Config file not found')
+        # Note that there's no 'else' here.  You could have no config file.
+        # The init will assume default values where there's no config.
         return config
 
     @staticmethod

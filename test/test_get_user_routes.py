@@ -38,6 +38,8 @@ class TestGetUserRoutes(unittest.TestCase):
         """
         ret1 = self.library.get_office_routes(True)
         ret2 = self.library.get_office_routes(False)
+        if ret1 == [] and ret2 == []:
+            raise self.skipTest('Inconclusive test, no offices defined')
         numhosts1 = sum([x.size for x in ret1])
         numhosts2 = sum([x.size for x in ret2])
         self.assertGreater(numhosts2, numhosts1)
@@ -52,6 +54,8 @@ class TestGetUserRoutes(unittest.TestCase):
         """
         ret1 = self.library.get_office_routes('sfo1')
         ret2 = self.library.get_office_routes(None)
+        if ret1 == [] and ret2 == []:
+            raise self.skipTest('Inconclusive test, no offices defined')
         numhosts1 = sum([x.size for x in ret1])
         numhosts2 = sum([x.size for x in ret2])
         self.assertGreater(numhosts2, numhosts1)
@@ -127,9 +131,9 @@ class TestGetUserRoutes(unittest.TestCase):
             This is failed-user test.
         """
         if not self.library.configfile.has_section('testing'):
-            unittest.skip('No testing section defined')
+            raise self.skipTest('No testing section defined')
         if not self.library.configfile.has_option('testing', 'bad_user'):
-            unittest.skip('No testing/bad_user defined')
+            raise self.skipTest('No testing/bad_user defined')
         bad_user = self.library.configfile.get('testing', 'bad_user')
         ret = self.library.build_user_routes(bad_user, True)
         self.assertEqual(ret, [])
@@ -144,9 +148,9 @@ class TestGetUserRoutes(unittest.TestCase):
             look for structure.
         """
         if not self.library.configfile.has_section('testing'):
-            unittest.skip('No testing section defined')
+            raise self.skipTest('No testing section defined')
         if not self.library.configfile.has_option('testing', 'normal_user'):
-            unittest.skip('No testing/normal_user defined')
+            raise self.skipTest('No testing/normal_user defined')
         normal_user = self.library.configfile.get('testing', 'normal_user')
         ret = self.library.build_user_routes(normal_user, True)
         self.assertIsInstance(ret, list)
@@ -170,9 +174,9 @@ class TestGetUserRoutes(unittest.TestCase):
             look for structure.
         """
         if not self.library.configfile.has_section('testing'):
-            unittest.skip('No testing section defined')
+            raise self.skipTest('No testing section defined')
         if not self.library.configfile.has_option('testing', 'normal_user'):
-            unittest.skip('No testing/normal_user defined')
+            raise self.skipTest('No testing/normal_user defined')
         normal_user = self.library.configfile.get('testing', 'normal_user')
         # If they're in the office, they should have more routes above the
         # minimum provided by 'free'
