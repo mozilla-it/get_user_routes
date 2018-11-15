@@ -4,7 +4,9 @@
 import os
 import subprocess
 from setuptools import setup
+
 NAME = 'get_user_routes'
+VERSION = '1.0.6'
 
 
 def git_version():
@@ -34,7 +36,7 @@ def git_version():
 
 setup(
     name=NAME,
-    version='1.0.5',
+    version=VERSION,
     author="Greg Cox",
     author_email="gcox@mozilla.com",
     url="https://github.com/mozilla-it/get_user_routes",
