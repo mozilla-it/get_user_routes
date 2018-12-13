@@ -6,7 +6,7 @@ import subprocess
 from setuptools import setup
 
 NAME = 'get_user_routes'
-VERSION = '1.0.6'
+VERSION = '1.1.0'
 
 
 def git_version():
