@@ -31,7 +31,6 @@
 import os
 import sys
 import ast
-from argparse import ArgumentParser
 import iamvpnlibrary
 from netaddr import IPNetwork, cidr_merge, cidr_exclude
 sys.dont_write_bytecode = True
@@ -245,45 +244,3 @@ class GetUserRoutes(object):
         # In the future, this may bear reworking to move cidr_merge later in
         # the process, but we're not there yet.
         return all_routes
-
-
-def main():
-    """
-        Handle argument parsing, build a route list, and print it.
-    """
-    parser = ArgumentParser(description='Args to control the CRL checking')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('--office', action="store_true", required=False,
-                       help='Someone is connecting from an unspecified office',
-                       dest='from_office_flag', default=False)
-    group.add_argument('--office-id', type=str, required=False,
-                       help='Office that someone is connecting from',
-                       dest='office_id', default=None)
-    # DELETEME: Use this v instead of the exclusive group ^ , eventually
-    # parser.add_argument('--office-id', type=str, required=False,
-    #                     help='Office that someone is connecting from',
-    #                     dest='office_id', default=None)
-    parser.add_argument('username', type=str,
-                        help='User that is connecting to us')
-    args = parser.parse_args()
-
-    gur = GetUserRoutes()
-    if args.office_id:
-        user_routes = gur.build_user_routes(args.username,
-                                            args.office_id)
-    elif args.from_office_flag:
-        user_routes = gur.build_user_routes(args.username,
-                                            args.from_office_flag)
-    else:
-        user_routes = gur.build_user_routes(args.username, None)
-
-    # Finally, we need to output all the routes in a nice list of
-    #    NETWORK SPACE NETMASK
-    # that bash will be able to iterate over
-    for net_object in user_routes:
-        # For one entry per line, remove the trailing comma
-        print("{network} {netmask}").format(network=net_object.network,
-                                            netmask=net_object.netmask)
-
-if __name__ == "__main__":
-    main()

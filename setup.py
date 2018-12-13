@@ -35,7 +35,7 @@ def git_version():
     return git_revision
 
 setup(
-    name=NAME,
+    name='get-user-routes',
     version=VERSION,
     author="Greg Cox",
     author_email="gcox@mozilla.com",
@@ -45,5 +45,6 @@ setup(
     long_description=open('README.md').read(),
     license="MPL",
     install_requires=['iamvpnlibrary>=0.8.2', 'netaddr'],
-    scripts=[NAME+'.py'],
+    scripts=['get-user-routes.py'],
+    py_modules=[NAME],
 )

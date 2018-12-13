@@ -1,7 +1,7 @@
 # Our config file:
 get_user_routes.conf
 # RPMs that get built
-get_user_routes-*.noarch.rpm
+python-get-user-routes-*.noarch.rpm
 # The upstream library config file, just in case we're testing locally.
 iamvpnlibrary.conf
 
