@@ -1,3 +1,8 @@
+# This repo is retired
+
+The functionality of this repo has been subsumed into [client-connect](https://github.com/mozilla-it/openvpn-client-connect).
+
+
 # get_user_routes
 This script is designed to work in conjunction with Mozilla's netfilter OpenVPN plugin.
 

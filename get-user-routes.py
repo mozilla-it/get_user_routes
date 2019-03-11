@@ -30,7 +30,6 @@
 
 import sys
 from argparse import ArgumentParser
-sys.path.insert(1, 'iamvpnlibrary')  # DELETEME
 from get_user_routes import GetUserRoutes
 sys.dont_write_bytecode = True
 
